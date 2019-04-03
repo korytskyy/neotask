@@ -25,6 +25,24 @@ public class EndToEndTest {
     
     @Test
     public void shouldCreateTokenAndForwardToProperUrl() {
+        String generatedToken = client.get().uri("/generateToken?url=http://www.google.com").exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(TEXT_PLAIN)
+                .expectBody(String.class).value(token -> assertThat(token).hasSize(12))
+                .returnResult().getResponseBody();
+    
+        client.get().uri("/token/" + generatedToken).exchange()
+                .expectStatus().is3xxRedirection()
+                .expectHeader().valueEquals("Location", "http://www.google.com");
+//
+//        Thread.sleep(ttl * 1000);
+//
+//        client.get().uri("/token/" + generatedToken).exchange()
+//                .expectStatus().isNotFound();
+    }
+    
+    @Test
+    public void shouldReturnDifferentTokenForTheSameUrlCalledSecondTime() {
         String firstToken = client.get().uri("/generateToken?url=http://www.google.com").exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(TEXT_PLAIN)
@@ -38,14 +56,11 @@ public class EndToEndTest {
                 .returnResult().getResponseBody();
     
         assertThat(lastToken).isNotEqualTo(firstToken);
-
-//        client.get().uri("/token/" + lastToken).exchange()
-//                .expectStatus().is3xxRedirection()
-//                .expectHeader().valueEquals("Location", "http://www.google.com");
-//
-//        Thread.sleep(ttl * 1000);
-//
-//        client.get().uri("/token/" + lastToken).exchange()
-//                .expectStatus().isNotFound();
+    }
+    
+    @Test
+    public void shouldReturnNotFoundForNotExistentToken() {
+        client.get().uri("/token/notExistent").exchange()
+                .expectStatus().isNotFound();
     }
 }

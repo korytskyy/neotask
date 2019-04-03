@@ -20,7 +20,7 @@ public class Random12SymbolUrlTokenGeneratorTest {
         UrlToken secondToken = generator.generate(someUrl);
         
         //then
-        assertThat(firstToken.getUrl()).hasValue(someUrl);
+        assertThat(firstToken.getUrl()).isEqualTo(someUrl);
         assertThat(firstToken.getToken().value()).hasSize(LENGTH);
         assertThat(secondToken.getToken().value()).hasSize(LENGTH);
         assertThat(firstToken).isNotEqualTo(secondToken);

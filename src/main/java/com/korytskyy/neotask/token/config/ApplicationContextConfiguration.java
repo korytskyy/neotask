@@ -1,10 +1,7 @@
 package com.korytskyy.neotask.token.config;
 
 import com.korytskyy.neotask.token.controller.RequestHandler;
-import com.korytskyy.neotask.token.service.DummyUrlTokenKeeper;
-import com.korytskyy.neotask.token.service.Random12SymbolUrlTokenGenerator;
-import com.korytskyy.neotask.token.service.UrlTokenGenerator;
-import com.korytskyy.neotask.token.service.UrlTokenKeeper;
+import com.korytskyy.neotask.token.service.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -29,12 +26,16 @@ public class ApplicationContextConfiguration {
     }
     
     @Bean
-    public UrlTokenKeeper urlTokenKeeper(UrlTokenGenerator urlTokenGenerator) {
-        return new DummyUrlTokenKeeper(urlTokenGenerator);
+    public UrlTokenKeeper urlTokenKeeper(UrlTokenGenerator urlTokenGenerator, UrlTokenRepository urlTokenRepository) {
+        return new GeneratorBasedUrlTokenKeeper(urlTokenGenerator, urlTokenRepository);
     }
     
     @Bean
     public UrlTokenGenerator urlTokenGenerator() {
         return new Random12SymbolUrlTokenGenerator();
+    }
+    
+    @Bean UrlTokenRepository urlTokenRepository() {
+        return new InMemoryUrlTokenRepository();
     }
 }

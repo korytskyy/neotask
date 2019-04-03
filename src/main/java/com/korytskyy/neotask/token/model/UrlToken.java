@@ -1,7 +1,6 @@
 package com.korytskyy.neotask.token.model;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -11,7 +10,7 @@ public class UrlToken {
     
     private UrlToken(Token token, Url url) {
         this.token = requireNonNull(token);
-        this.url = url;
+        this.url = requireNonNull(url);
     }
     
     public static UrlToken of(Token token, Url url) {
@@ -22,8 +21,8 @@ public class UrlToken {
         return token;
     }
     
-    public Optional<Url> getUrl() {
-        return Optional.ofNullable(url);
+    public Url getUrl() {
+        return url;
     }
     
     @Override
