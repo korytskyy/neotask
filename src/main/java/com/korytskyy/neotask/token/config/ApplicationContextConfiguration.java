@@ -2,6 +2,8 @@ package com.korytskyy.neotask.token.config;
 
 import com.korytskyy.neotask.token.controller.RequestHandler;
 import com.korytskyy.neotask.token.service.DummyUrlTokenKeeper;
+import com.korytskyy.neotask.token.service.Random12SymbolUrlTokenGenerator;
+import com.korytskyy.neotask.token.service.UrlTokenGenerator;
 import com.korytskyy.neotask.token.service.UrlTokenKeeper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +29,12 @@ public class ApplicationContextConfiguration {
     }
     
     @Bean
-    public UrlTokenKeeper urlTokenKeeper() {
-        return new DummyUrlTokenKeeper();
+    public UrlTokenKeeper urlTokenKeeper(UrlTokenGenerator urlTokenGenerator) {
+        return new DummyUrlTokenKeeper(urlTokenGenerator);
+    }
+    
+    @Bean
+    public UrlTokenGenerator urlTokenGenerator() {
+        return new Random12SymbolUrlTokenGenerator();
     }
 }
